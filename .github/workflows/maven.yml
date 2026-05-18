@@ -38,6 +38,19 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment_name }}
     steps:
+    # Save the triggering workflow information as an artifact for later reference
+      - name: Save triggering workflow info
+        run: |
+          echo "TRIGGERING_WORKFLOW_RUN_ID=${{ github.event.workflow_run.id }}" > workflow-context.txt
+          echo "TRIGGERING_WORKFLOW_HEAD_BRANCH=${{ github.event.workflow_run.head_branch }}" >> workflow-context.txt
+          echo "TRIGGERING_WORKFLOW_HEAD_SHA=${{ github.event.workflow_run.head_sha }}" >> workflow-context.txt
+          cat workflow-context.txt
+
+      - name: Upload workflow context
+        uses: actions/upload-artifact@v6
+        with:
+          name: workflow-context
+          path: workflow-context.txt
       - name: Checkout branch
         uses: actions/checkout@v4
         with:
